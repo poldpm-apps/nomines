@@ -5,7 +5,7 @@
   "lang": "ca",
   "start_url": "./?app=1",
   "scope": "./",
-  "id": "/nomines/",
+  "id": "/nomines/les-meves-nomines",
   "display": "standalone",
   "background_color": "#1d5d8c",
   "theme_color": "#1d5d8c",

@@ -28,8 +28,18 @@
 </main>
 <script>
   const TAULER = 'https://claude.ai/artifact/H5KeS8MekvG4R6KoXLfnzJ';
-  // Obert des de la icona instal·lada: salta directament al tauler.
-  if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || /[?&]app=1/.test(location.search)) location.replace(TAULER);
+  // Obert des de la icona instal·lada, o des de la drecera (?app=1) un cop ja preparada: salta al tauler.
+  const q = new URLSearchParams(location.search);
+  let preparada = false; try { preparada = localStorage.getItem('nomines.drecera') === '1'; } catch (e) {}
+  if (q.has('config')) { try { localStorage.removeItem('nomines.drecera'); } catch (e) {} preparada = false; }
+  if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || (q.has('app') && preparada)) location.replace(TAULER);
+  else if (q.has('app')) {
+    // Primera vegada amb ?app=1: és el moment de crear la drecera des d'aquesta mateixa adreça.
+    try { localStorage.setItem('nomines.drecera', '1'); } catch (e) {}
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('help').innerHTML = 'Ara, des d\'aquesta pàgina: menú ⋮ del Chrome → <b>Afegeix a la pantalla d\'inici</b>. Si et pregunta, tria <b>Crea una drecera</b>.<br><br>A partir d\'ara, la icona obrirà el tauler directament.';
+    });
+  }
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   let prompt;
   addEventListener('beforeinstallprompt', e => { e.preventDefault(); prompt = e; document.getElementById('install').hidden = false; });
